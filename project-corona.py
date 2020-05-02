@@ -120,7 +120,6 @@ def handle_dialog(req, res):
                     "hide": True
                 }]
         else:
-            logging.info(req['request']['entities'])
             res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
