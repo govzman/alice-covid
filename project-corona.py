@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 sessionStorage = {}
 
-part_dialog = 0  # 0 - узнаем адрес, 1 - говорим количество
+parts = {}  # 0 - узнаем адрес, 1 - говорим количество
 #                  и ближайший адрес, 2 - спрашиваем хочет ли узнать еще
 
 '''
@@ -65,8 +65,9 @@ for i in streets:
 def handle_dialog(req, res):
     user_id = req['session']['user_id']
     if req['session']['new']:
-        part = 0
-        res['response']['text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать (работает только для Москвы)'
+        parts[user_id] = 0
+        res['response'][
+            'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать (работает только для Москвы)'
         res['response']['buttons'] = [{
             "title": "Красная площадь, 1",
             "payload": {},
@@ -82,12 +83,12 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
         res['response']['end_session'] = True
         return
-    elif part == 0:
+    elif parts[user_id] == 0:
         try:
             err = True
             for i, dat in enumerate(req['request']['nlu']['entities']):
                 if dat['type'] == "YANDEX.GEO":
-                    part = 1
+                    parts[user_id] = 1
                     err = False
                     res['response']['text'] = req['request']['nlu']['entities'][i]['value']['street'] + ', ' + \
                         req['request']['nlu']['entities'][i]['value']['house_number']
