@@ -46,9 +46,8 @@ def main():
             'end_session': False
         }
     }
-
     handle_dialog(request.json, response)
-    logging.info(f'Response:  {response!r}')
+    #logging.info(f'Response:  {response!r}')
     return json.dumps(response)
 
 
@@ -68,13 +67,15 @@ def handle_dialog(req, res):
     if req['session']['new']:
         part = 0
         res['response']['text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать (работает только для Москвы)'
-        sessionStorage[user_id] = {
-            'suggests': [
-                "Красная площадь, 1",
-                "Закончить диалог",
-            ]
-        }
-        res['response']['buttons'] = sessionStorage[user_id]
+        res['response']['buttons'] = [{
+            "title": "Красная площадь, 1",
+            "payload": {},
+            "hide": True
+        }, {
+            "title": "Закончить диалог",
+            "payload": {},
+            "hide": True
+        }]
         return
 
     if req['request']['original_utterance'].lower() == 'закончить диалог':
@@ -85,16 +86,20 @@ def handle_dialog(req, res):
     if req['request']['entities'][0]['value']['street'] == '' and part == 0:
         res['response'][
             'text'] = 'Я не совсем поняла вас. Назовите адрес в Москве'
-        sessionStorage[user_id] = {
-            'suggests': [
-                "Красная площадь, 1",
-                "Закончить диалог",
-            ]
-        }
-        res['response']['buttons'] = sessionStorage[user_id]
+        res['response']['buttons'] = [{
+            "title": "Красная площадь, 1",
+            "payload": {},
+            "hide": True
+        }, {
+            "title": "Закончить диалог",
+            "payload": {},
+            "hide": True
+        }]
+        
     elif part == 0 and req['request']['entities'][0]['value']['street'] != '':
         part = 1
-        res['response']['text'] = req['request']['entities'][0]['value']
+        res['response']['text'] = str(req['request']['entities'][0]['value'])
+        
 
 
 
