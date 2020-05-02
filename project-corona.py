@@ -95,6 +95,7 @@ def handle_dialog(req, res):
                     res['response']['text'] = req['request']['entities'][i]['value']['street'] + ', ' + \
                         req['request']['entities'][i]['value']['house_number']
             if err:
+                logging.info(f'{req['request']['entities']}')
                 res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
                 res['response']['buttons'] = [{
                     "title": "Красная площадь, 1",
@@ -105,8 +106,8 @@ def handle_dialog(req, res):
                     "payload": {},
                     "hide": True
                 }]
-        except Exception:
-            res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+        except Exception as e:
+            res['response']['text'] = 'Ошибка: ' + str(e) +'. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
                 "payload": {},
