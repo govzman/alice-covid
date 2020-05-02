@@ -77,12 +77,14 @@ def handle_dialog(req, res):
             "hide": True
         }]
         return
-
+    try:
     if req['request']['original_utterance'].lower() == 'закончить диалог':
         res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
         res['response']['end_session'] = True
         return
-    elif part == 0:
+    except Exception:
+        pass
+    if part == 0:
         try:
             err = True
             for i, dat in enumerate(req['request']['entities']):
@@ -102,7 +104,7 @@ def handle_dialog(req, res):
                     "payload": {},
                     "hide": True
                 }]
-        except:
+        except Exception:
             res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
