@@ -98,7 +98,8 @@ def handle_dialog(req, res):
         
     elif part == 0 and req['request']['entities'][0]['value']['street'] != '':
         part = 1
-        res['response']['text'] = str(req['request']['entities'][0]['value'])
+        res['response']['text'] = req['request']['entities'][0]['value']['street'] + ', ' + \
+            req['request']['entities'][0]['value']['house_number']
         
 
 
