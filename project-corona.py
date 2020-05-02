@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 sessionStorage = {}
 
-part_dialog = 0  # 0 - узнаем адрес, 1 - говорим количество
+part = 0  # 0 - узнаем адрес, 1 - говорим количество
 #                  и ближайший адрес, 2 - спрашиваем хочет ли узнать еще
 
 '''
@@ -63,6 +63,7 @@ for i in streets:
 '''
 
 def handle_dialog(req, res):
+    global part
     user_id = req['session']['user_id']
     if req['session']['new']:
         part = 0
