@@ -82,27 +82,38 @@ def handle_dialog(req, res):
         res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
         res['response']['end_session'] = True
         return
-    
-    if req['request']['entities'][0]['value']['street'] == '' and part == 0:
-        res['response'][
-            'text'] = 'Я не совсем поняла вас. Назовите адрес в Москве'
-        res['response']['buttons'] = [{
-            "title": "Красная площадь, 1",
-            "payload": {},
-            "hide": True
-        }, {
-            "title": "Закончить диалог",
-            "payload": {},
-            "hide": True
-        }]
+    elif part == 0:
+        try:
+            err = True
+            for i, dat in enumerate(req['request']['entities']):
+                if dat['type'] == "YANDEX.GEO":
+                    part = 1
+                    err = False
+                    res['response']['text'] = req['request']['entities'][i]['value']['street'] + ', ' + \
+                        req['request']['entities'][i]['value']['house_number']
+            if err:
+                res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+                res['response']['buttons'] = [{
+                    "title": "Красная площадь, 1",
+                    "payload": {},
+                    "hide": True
+                }, {
+                    "title": "Закончить диалог",
+                    "payload": {},
+                    "hide": True
+                }]
+        except:
+            res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+            res['response']['buttons'] = [{
+                "title": "Красная площадь, 1",
+                "payload": {},
+                "hide": True
+            }, {
+                "title": "Закончить диалог",
+                "payload": {},
+                "hide": True
+            }]
         
-    elif part == 0 and req['request']['entities'][0]['value']['street'] != '':
-        part = 1
-        res['response']['text'] = req['request']['entities'][0]['value']['street'] + ', ' + \
-            req['request']['entities'][0]['value']['house_number']
-        
-
-
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
