@@ -86,17 +86,30 @@ def handle_dialog(req, res):
     except Exception:
         pass
     if part == 0:
-        try:
-            err = True
-            for i, dat in enumerate(req['request']['entities']):
-                if dat['type'] == "YANDEX.GEO":
-                    part = 1
-                    err = False
-                    res['response']['text'] = req['request']['entities'][i]['value']['street'] + ', ' + \
-                        req['request']['entities'][i]['value']['house_number']
-            if err:
-                logging.info(req['request']['entities'])
-                res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+        if req['request']['entities'] != []:        
+            try:
+                err = True
+                for i, dat in enumerate(req['request']['entities']):
+                    if dat['type'] == "YANDEX.GEO":
+                        part = 1
+                        err = False
+                        res['response']['text'] = req['request']['entities'][i]['value']['street'] + ', ' + \
+                            req['request']['entities'][i]['value']['house_number']
+                        break
+                if err:
+                    logging.info(req['request']['entities'])
+                    res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+                    res['response']['buttons'] = [{
+                        "title": "Красная площадь, 1",
+                        "payload": {},
+                        "hide": True
+                    }, {
+                        "title": "Закончить диалог",
+                        "payload": {},
+                        "hide": True
+                    }]
+            except Exception as e:
+                res['response']['text'] = 'Ошибка: ' + str(e) +'. Назовите адрес еще раз'
                 res['response']['buttons'] = [{
                     "title": "Красная площадь, 1",
                     "payload": {},
@@ -106,17 +119,18 @@ def handle_dialog(req, res):
                     "payload": {},
                     "hide": True
                 }]
-        except Exception as e:
-            res['response']['text'] = 'Ошибка: ' + str(e) +'. Назовите адрес еще раз'
-            res['response']['buttons'] = [{
-                "title": "Красная площадь, 1",
-                "payload": {},
-                "hide": True
-            }, {
-                "title": "Закончить диалог",
-                "payload": {},
-                "hide": True
-            }]
+        else:
+            logging.info(req['request']['entities'])
+                    res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+                    res['response']['buttons'] = [{
+                        "title": "Красная площадь, 1",
+                        "payload": {},
+                        "hide": True
+                    }, {
+                        "title": "Закончить диалог",
+                        "payload": {},
+                        "hide": True
+                    }]
         
 
 if __name__ == '__main__':
