@@ -121,16 +121,16 @@ def handle_dialog(req, res):
                 }]
         else:
             logging.info(req['request']['entities'])
-                    res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
-                    res['response']['buttons'] = [{
-                        "title": "Красная площадь, 1",
-                        "payload": {},
-                        "hide": True
-                    }, {
-                        "title": "Закончить диалог",
-                        "payload": {},
-                        "hide": True
-                    }]
+            res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+            res['response']['buttons'] = [{
+                "title": "Красная площадь, 1",
+                "payload": {},
+                "hide": True
+            }, {
+                "title": "Закончить диалог",
+                "payload": {},
+                "hide": True
+            }]
         
 
 if __name__ == '__main__':
