@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 sessionStorage = {}
 
-part = 0  # 0 - узнаем адрес, 1 - говорим количество
+part_dialog = 0  # 0 - узнаем адрес, 1 - говорим количество
 #                  и ближайший адрес, 2 - спрашиваем хочет ли узнать еще
 
 '''
@@ -63,7 +63,6 @@ for i in streets:
 '''
 
 def handle_dialog(req, res):
-    global part
     user_id = req['session']['user_id']
     if req['session']['new']:
         part = 0
@@ -78,38 +77,22 @@ def handle_dialog(req, res):
             "hide": True
         }]
         return
-    try:
-        if req['request']['original_utterance'].lower() == 'закончить диалог':
-            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
-            res['response']['end_session'] = True
-            return
-    except Exception:
-        pass
-    if part == 0:
-        if 'entities' in list(req['request'].keys()):        
-            try:
-                err = True
-                for i, dat in enumerate(req['request']['entities']):
-                    if dat['type'] == "YANDEX.GEO":
-                        part = 1
-                        err = False
-                        res['response']['text'] = req['request']['entities'][i]['value']['street'] + ', ' + \
-                            req['request']['entities'][i]['value']['house_number']
-                        break
-                if err:
-                    logging.info(req['request']['entities'])
-                    res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
-                    res['response']['buttons'] = [{
-                        "title": "Красная площадь, 1",
-                        "payload": {},
-                        "hide": True
-                    }, {
-                        "title": "Закончить диалог",
-                        "payload": {},
-                        "hide": True
-                    }]
-            except Exception as e:
-                res['response']['text'] = 'Ошибка: ' + str(e) +'. Назовите адрес еще раз'
+
+    if req['request']['original_utterance'].lower() == 'закончить диалог':
+        res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
+        res['response']['end_session'] = True
+        return
+    elif part == 0:
+        try:
+            err = True
+            for i, dat in enumerate(req['request']['nlu']['entities']):
+                if dat['type'] == "YANDEX.GEO":
+                    part = 1
+                    err = False
+                    res['response']['text'] = req['request']['nlu']['entities'][i]['value']['street'] + ', ' + \
+                        req['request']['nlu']['entities'][i]['value']['house_number']
+            if err:
+                res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
                 res['response']['buttons'] = [{
                     "title": "Красная площадь, 1",
                     "payload": {},
@@ -119,7 +102,7 @@ def handle_dialog(req, res):
                     "payload": {},
                     "hide": True
                 }]
-        else:
+        except:
             res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
