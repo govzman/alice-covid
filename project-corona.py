@@ -79,10 +79,13 @@ def handle_dialog(req, res):
         }]
         return
 
-    if req['request']['original_utterance'].lower() == 'закончить диалог':
-        res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
-        res['response']['end_session'] = True
+    try:
+        if req['request']['original_utterance'].lower() == 'закончить диалог':
+            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
+            res['response']['end_session'] = True
         return
+    except Exception:
+        pass
     elif parts[user_id] == 0:
         try:
             err = True
