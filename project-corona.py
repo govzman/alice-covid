@@ -86,7 +86,7 @@ def handle_dialog(req, res):
     except Exception:
         pass
     if part == 0:
-        if req['request']['entities'] != []:        
+        if 'entities' in list(req['request'].keys()):        
             try:
                 err = True
                 for i, dat in enumerate(req['request']['entities']):
