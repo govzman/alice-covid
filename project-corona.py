@@ -86,7 +86,7 @@ def handle_dialog(req, res):
         return
     except Exception:
         pass
-    elif parts[user_id] == 0:
+    if parts[user_id] == 0:
         try:
             err = True
             for i, dat in enumerate(req['request']['nlu']['entities']):
