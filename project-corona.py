@@ -127,17 +127,16 @@ def handle_dialog(req, res):
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
-            if err:
-                res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
-                res['response']['buttons'] = [{
-                    "title": "Красная площадь, 1",
-                    "payload": {},
-                    "hide": True
-                }, {
-                    "title": "Закончить диалог",
-                    "payload": {},
-                    "hide": True
-                }]
+            res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
+            res['response']['buttons'] = [{
+                "title": "Красная площадь, 1",
+                "payload": {},
+                "hide": True
+            }, {
+                "title": "Закончить диалог",
+                "payload": {},
+                "hide": True
+            }]
         except Exception:
             res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
             res['response']['buttons'] = [{
@@ -149,7 +148,33 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-
+    else:
+        res['response']['text'] = 'Хочешь узнать еще о каком-нибудь месте?'
+        res['response']['buttons'] = [{
+            "title": "Да",
+            "payload": {},
+            "hide": True
+        }, {
+            "title": "Нет",
+            "payload": {},
+            "hide": True
+        }]
+        if 'Нет' in req['request']['nlu']['tokens'] or 'Не хочу' in req['request']['nlu']['tokens']:
+            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
+            res['response']['end_session'] = True
+            return
+        else:
+            parts[user_id] = 0
+            res['response']['text'] = 'Назови адрес'
+            res['response']['buttons'] = [{
+                "title": "Красная площадь, 1",
+                "payload": {},
+                "hide": True
+            }, {
+                "title": "Закончить диалог",
+                "payload": {},
+                            "hide": True
+            }]
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
