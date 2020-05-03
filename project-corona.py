@@ -26,10 +26,10 @@ def search(cords, rad=1):
     con = sqlite3.connect('data_covid.db')
     cur = con.cursor()
     result = cur.execute(
-        "SELECT * FROM adresses WHERE (height >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) -
-                                                         900000 * rad) + ") AND (height <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) + 900000 * rad) +
-        ") AND (width >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) -
-                                 1562500 * rad) + ") AND (width <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
+        "SELECT * FROM adresses WHERE (width >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) -
+                                                         900000 * rad) + ") AND (width <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) + 900000 * rad) +
+        ") AND (height >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) -
+                                 1562500 * rad) + ") AND (height <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
     con.close()
     return str(len(result))
 
