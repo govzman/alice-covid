@@ -8,18 +8,7 @@ from flask import Flask, request
 import logging
 import sqlite3
 
-'''
-# 0.009 - широта, 0.15625 - долгота
-con = sqlite3.connect('data_covid.db')
-cur = con.cursor()
-# Выполнение запроса и получение всех результатов
-result = cur.execute("SELECT title FROM Films WHERE (year >= 1997)" +
-                     " AND ((genre=(SELECT id FROM genres WHERE title = " + 
-                     "'анимация')) OR (genre=(SELECT id FROM genres WHERE title = 'музыка')))").fetchall()
-# Вывод результатов на экран
-for elem in result:
-    print(*elem)
-    '''
+
 def search(cords, rad=1):
     dis = []
     con = sqlite3.connect('data_covid.db')
@@ -111,6 +100,13 @@ def handle_dialog(req, res):
             return
     except Exception:
         pass
+   try:
+      if req['request']['nlu']['tokens'] == ['что', 'ты', 'умеешь'] or req['request']['nlu']['tokens'] == ['помощь']:
+          res['response']['text'] = 'Я умею определять сколько зараженных коронавирусом людей находятся в радиусе 1 километра от тебя, для этого мне достаточно сказать адрес любого дома.'
+          res['response']['end_session'] = True
+          return
+  except Exception:
+      pass
     if parts[user_id] == 0:
         try:
             for i, dat in enumerate(req['request']['nlu']['entities']):
