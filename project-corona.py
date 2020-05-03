@@ -12,17 +12,16 @@ import sqlite3
 # 0.009 - широта, 0.15625 - долгота
 con = sqlite3.connect('data_covid.db')
 cur = con.cursor()
-
 # Выполнение запроса и получение всех результатов
 result = cur.execute("SELECT title FROM Films WHERE (year >= 1997)" +
                      " AND ((genre=(SELECT id FROM genres WHERE title = " + 
                      "'анимация')) OR (genre=(SELECT id FROM genres WHERE title = 'музыка')))").fetchall()
-
 # Вывод результатов на экран
 for elem in result:
     print(*elem)
     '''
 def search(cords, rad=1):
+    dis = []
     con = sqlite3.connect('data_covid.db')
     cur = con.cursor()
     result = cur.execute(
@@ -31,7 +30,12 @@ def search(cords, rad=1):
         ") AND (height >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) -
                                  1562500 * rad) + ") AND (height <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
     con.close()
-    return str(len(result))
+    for i in result:
+        distance = ((
+            (i[2] - int(cords[0].replace('.', '').ljust(10, '0'))) / 900) ** 2 + (
+            (i[3] - int(cords[1].replace('.', '').ljust(10, '0'))) / 15625) ** 2) ** 0.5
+        dis.append(distance)
+    return str(len(result)) + '   ' + str(min(dis))
 
 
 app = Flask(__name__)
