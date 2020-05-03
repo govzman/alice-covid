@@ -148,7 +148,7 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-    elif part == 1:
+    elif parts[user_id] == 1:
         res['response']['text'] = 'Хочешь узнать еще о каком-нибудь месте?'
         parts[user_id] = 2
         res['response']['buttons'] = [{
