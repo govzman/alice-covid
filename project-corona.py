@@ -137,8 +137,8 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-        except Exception:
-            res['response']['text'] = 'Ошибка. Назовите адрес еще раз'
+        except Exception as e:
+            res['response']['text'] = 'Ошибка: " + str(e) + '  '+ str(e.__class__.__name__) + ". Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
                 "payload": {},
