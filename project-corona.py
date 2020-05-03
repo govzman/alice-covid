@@ -83,7 +83,7 @@ def handle_dialog(req, res):
         if req['request']['nlu']['tokens'] == ['закончить', 'диалог']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
             res['response']['end_session'] = True
-        return
+            return
     except Exception:
         pass
     if parts[user_id] == 0:
