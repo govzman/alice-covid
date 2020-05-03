@@ -80,7 +80,7 @@ def handle_dialog(req, res):
         return
 
     try:
-        if req['request']['original_utterance'].lower() == 'закончить диалог':
+        if req['request']['nlu']['tokens'] == ['закончить', 'диалог']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
             res['response']['end_session'] = True
         return
