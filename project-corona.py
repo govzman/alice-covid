@@ -72,21 +72,6 @@ sessionStorage = {}
 parts = {}  # 0 - узнаем адрес, 1 - говорим количество
 #                  и ближайший адрес, 2 - спрашиваем хочет ли узнать еще
 
-'''
-geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Красная площадь,+1&format=json"
-response = requests.get(geocoder_request)
-if response:
-    json_response = response.json()
-    toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-    toponym_coodrinates = toponym["Point"]["pos"]
-    print(toponym_coodrinates)
-else:
-    print("Ошибка выполнения запроса:")
-    print(geocoder_request)
-    print("Http статус:", response.status_code, "(", response.reason, ")")
-'''
-
-
 @app.route('/', methods=['POST'])
 def main():
     # logging.info(f'Request: {request.json!r}')
@@ -101,22 +86,13 @@ def main():
     # logging.info(f'Response:  {response!r}')
     return json.dumps(response)
 
-
-'''
-req = requests.post('https://coronavirus.mash.ru/search.php',
-                    data={'referal': 'Улица'})
-streets = req.text.split('</tr>')[1:]
-streets.pop()
-for i in streets:
-    print(''.join(i.split('</td>')).split('<td>')[1:3])
-'''
-
+  
 def handle_dialog(req, res):
     user_id = req['session']['user_id']
     if req['session']['new']:
         parts[user_id] = 0
         res['response'][
-            'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать (работает только для Москвы)'
+            'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать'
         res['response']['buttons'] = [{
             "title": "Красная площадь, 1",
             "payload": {},
