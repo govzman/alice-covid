@@ -29,7 +29,7 @@ def search(cords, rad=1):
         "SELECT * FROM adresses WHERE (height >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) -
                                                          900000 * rad) + ") AND (height <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) + 900000 * rad) +
         ") AND (width >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) -
-                                 1562500 * rad) + ") AND (widht <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
+                                 1562500 * rad) + ") AND (width <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
     con.close()
     return str(len(result))
 
