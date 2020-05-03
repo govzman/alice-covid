@@ -120,8 +120,7 @@ def handle_dialog(req, res):
                     if response:
                         json_response = response.json()
                         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
-                        toponym_coodrinates = toponym["Point"]["pos"]
-
+                        toponym_coordinates = toponym["Point"]["pos"]
                         res['response']['text'] = search(
                             toponym_coordinates.split())
                     else:
