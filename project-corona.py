@@ -148,8 +148,9 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-    else:
+    elif part == 1:
         res['response']['text'] = 'Хочешь узнать еще о каком-нибудь месте?'
+        parts[user_id] = 2
         res['response']['buttons'] = [{
             "title": "Да",
             "payload": {},
@@ -159,6 +160,7 @@ def handle_dialog(req, res):
             "payload": {},
             "hide": True
         }]
+    else:
         if 'Нет' in req['request']['nlu']['tokens'] or 'Не хочу' in req['request']['nlu']['tokens']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
             res['response']['end_session'] = True
