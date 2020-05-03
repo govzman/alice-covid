@@ -138,7 +138,7 @@ def handle_dialog(req, res):
                 "hide": True
             }]
         except Exception:
-            res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
+            res['response']['text'] = 'Ошибка. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
                 "payload": {},
