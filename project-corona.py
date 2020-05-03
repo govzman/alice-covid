@@ -100,13 +100,13 @@ def handle_dialog(req, res):
             return
     except Exception:
         pass
-   try:
-      if req['request']['nlu']['tokens'] == ['что', 'ты', 'умеешь'] or req['request']['nlu']['tokens'] == ['помощь']:
-          res['response']['text'] = 'Я умею определять сколько зараженных коронавирусом людей находятся в радиусе 1 километра от тебя, для этого мне достаточно сказать адрес любого дома.'
-          res['response']['end_session'] = True
-          return
-  except Exception:
-      pass
+    try:
+        if req['request']['nlu']['tokens'] == ['что', 'ты', 'умеешь'] or req['request']['nlu']['tokens'] == ['помощь']:
+            res['response']['text'] = 'Я умею определять сколько зараженных коронавирусом людей находятся в радиусе 1 километра от тебя, для этого мне достаточно сказать адрес любого дома.'
+            res['response']['end_session'] = True
+            return
+    except Exception:
+        pass
     if parts[user_id] == 0:
         try:
             for i, dat in enumerate(req['request']['nlu']['entities']):
