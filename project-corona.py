@@ -26,13 +26,13 @@ def search(cords, rad=1):
     con = sqlite3.connect('data_covid.db')
     cur = con.cursor()
     result = cur.execute(
-        "SELECT * FROM adresses WHERE (height <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) +
-                                                         900000 * rad) + ") AND (height >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) - 900000 * rad) +
-        ") AND (width <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) +
-                                 1562500 * rad) + ") AND (widht >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) - 1562500 * rad) + ")").fetchall()
-    for elem in result:
-        logging.info(*elem)
+        "SELECT * FROM adresses WHERE (height >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) -
+                                                         900000 * rad) + ") AND (height <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) + 900000 * rad) +
+        ") AND (width >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) -
+                                 1562500 * rad) + ") AND (widht <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) + 1562500 * rad) + ")").fetchall()
     con.close()
+    return str(len(result))
+
 
 app = Flask(__name__)
 
@@ -121,8 +121,9 @@ def handle_dialog(req, res):
                         json_response = response.json()
                         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
                         toponym_coodrinates = toponym["Point"]["pos"]
-                        search(toponym_coordinates.split())
-                        res['response']['text'] = 'Отладка'
+
+                        res['response']['text'] = search(
+                            toponym_coordinates.split())
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
