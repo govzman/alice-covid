@@ -99,17 +99,16 @@ def handle_dialog(req, res):
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
-            if err:
-                res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
-                res['response']['buttons'] = [{
-                    "title": "Красная площадь, 1",
-                    "payload": {},
-                    "hide": True
-                }, {
-                    "title": "Закончить диалог",
-                    "payload": {},
-                    "hide": True
-                }]
+            res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
+            res['response']['buttons'] = [{
+                "title": "Красная площадь, 1",
+                "payload": {},
+                "hide": True
+            }, {
+                "title": "Закончить диалог",
+                "payload": {},
+                "hide": True
+            }]
         except Exception:
             res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
             res['response']['buttons'] = [{
