@@ -38,7 +38,7 @@ else:
 
 @app.route('/', methods=['POST'])
 def main():
-    logging.info(f'Request: {request.json!r}')
+    #logging.info(f'Request: {request.json!r}')
     response = {
         'session': request.json['session'],
         'version': request.json['version'],
