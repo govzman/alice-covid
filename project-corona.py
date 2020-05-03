@@ -35,7 +35,7 @@ def search(cords, rad=1):
             (i[2] - int(cords[1].replace('.', '').ljust(10, '0'))) / 900) ** 2 + (
             (i[3] - int(cords[0].replace('.', '').ljust(10, '0'))) / 15625) ** 2) ** 0.5
         dis.append(distance)
-    text = "В радиусе 1 километра от вас " + str(len(result))
+    text = "В радиусе 1 километра от этого дома " + str(len(result))
     if str(len(result))[-1] == '1' and str(len(result))[-2] != '1':
       text += ' зараженный'
     else:
@@ -46,17 +46,18 @@ def search(cords, rad=1):
         text += ' на расстоянии в '
         text += str(int(round(min(dis), 0)))
         if str(int(round(min(dis), 0)))[-1] == '1' and str(int(round(min(dis), 0)))[-2] != '1':      
-            text += ' метр от этого дома'
+            text += ' метр от этого дома.'
         elif str(int(round(min(dis), 0)))[-1] == '2' and str(int(round(min(dis), 0)))[-2] != '1':
-            text += ' метра от этого дома'
+            text += ' метра от этого дома.'
         elif str(int(round(min(dis), 0)))[-1] == '3' and str(int(round(min(dis), 0)))[-2] != '1':
-            text += ' метра от этого дома'
+            text += ' метра от этого дома.'
         elif str(int(round(min(dis), 0)))[-1] == '4' and str(int(round(min(dis), 0)))[-2] != '1':
-            text += ' метра от этого дома'
+            text += ' метра от этого дома.'
         else:
-            text += ' метров от этого дома'
+            text += ' метров от этого дома.'
     else:
-      text += ', но ближайший зараженный находится в этом доме!'
+      text += ' и ближайший зараженный находится в этом доме!'
+    text += ' Хочешь узнать еще о каком-нибудь месте?'
     return text
 
 
@@ -129,7 +130,7 @@ def handle_dialog(req, res):
 
     try:
         if req['request']['nlu']['tokens'] == ['закончить', 'диалог']:
-            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
+            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
             res['response']['end_session'] = True
             return
     except Exception:
@@ -149,6 +150,15 @@ def handle_dialog(req, res):
                         toponym_coordinates = toponym["Point"]["pos"]
                         res['response']['text'] = search(
                             toponym_coordinates.split())
+                        res['response']['buttons'] = [{
+                              "title": "Да",
+                              "payload": {},
+                              "hide": True
+                        }, {
+                              "title": "Нет",
+                              "payload": {},    
+                              "hide": True
+                        }]                        
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
@@ -173,21 +183,10 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-    elif parts[user_id] == 1:
-        res['response']['text'] = 'Хочешь узнать еще о каком-нибудь месте?'
-        parts[user_id] = 2
-        res['response']['buttons'] = [{
-            "title": "Да",
-            "payload": {},
-            "hide": True
-        }, {
-            "title": "Нет",
-            "payload": {},
-            "hide": True
-        }]
+
     else:
         if 'нет' in req['request']['nlu']['tokens'] or 'не хочу' in req['request']['nlu']['tokens']:
-            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
+            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
             res['response']['end_session'] = True
             return
         else:
