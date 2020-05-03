@@ -161,7 +161,7 @@ def handle_dialog(req, res):
             "hide": True
         }]
     else:
-        if 'Нет' in req['request']['nlu']['tokens'] or 'Не хочу' in req['request']['nlu']['tokens']:
+        if 'нет' in req['request']['nlu']['tokens'] or 'не хочу' in req['request']['nlu']['tokens']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра!'
             res['response']['end_session'] = True
             return
