@@ -6,7 +6,33 @@ import os
 
 from flask import Flask, request
 import logging
+import sqlite3
 
+'''
+# 0.009 - широта, 0.15625 - долгота
+con = sqlite3.connect('data_covid.db')
+cur = con.cursor()
+
+# Выполнение запроса и получение всех результатов
+result = cur.execute("SELECT title FROM Films WHERE (year >= 1997)" +
+                     " AND ((genre=(SELECT id FROM genres WHERE title = " + 
+                     "'анимация')) OR (genre=(SELECT id FROM genres WHERE title = 'музыка')))").fetchall()
+
+# Вывод результатов на экран
+for elem in result:
+    print(*elem)
+    '''
+def search(cords, rad=1):
+    con = sqlite3.connect('data_covid.db')
+    cur = con.cursor()
+    result = cur.execute(
+        "SELECT * FROM adresses WHERE (height <= " + str(int(cords[0].replace('.', '').ljust(10, '0')) +
+                                                         900000 * rad) + ") AND (height >= " + str(int(cords[0].replace('.', '').ljust(10, '0')) - 900000 * rad) +
+        ") AND (width <= " + str(int(cords[1].replace('.', '').ljust(10, '0')) +
+                                 1562500 * rad) + ") AND (widht >= " + str(int(cords[1].replace('.', '').ljust(10, '0')) - 1562500 * rad) + ")").fetchall()
+    for elem in result:
+        logging.info(*elem)
+    con.close()
 
 app = Flask(__name__)
 
@@ -95,20 +121,22 @@ def handle_dialog(req, res):
                         json_response = response.json()
                         toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
                         toponym_coodrinates = toponym["Point"]["pos"]
-                        res['response']['text'] = toponym_coodrinates
+                        search(toponym_coordinates.split())
+                        res['response']['text'] = 'Отладка'
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
-            res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
-            res['response']['buttons'] = [{
-                "title": "Красная площадь, 1",
-                "payload": {},
-                "hide": True
-            }, {
-                "title": "Закончить диалог",
-                "payload": {},
-                "hide": True
-            }]
+            if err:
+                res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
+                res['response']['buttons'] = [{
+                    "title": "Красная площадь, 1",
+                    "payload": {},
+                    "hide": True
+                }, {
+                    "title": "Закончить диалог",
+                    "payload": {},
+                    "hide": True
+                }]
         except Exception:
             res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
             res['response']['buttons'] = [{
