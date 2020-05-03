@@ -40,11 +40,23 @@ def search(cords, rad=1):
       text += ' зараженный'
     else:
       text += ' зараженных'
-    text += ', при этом ближайший дом находится по адресу: '
-    text += result[dis.index(min(dis))][1].replace('Москва, ', '')
-    text += ' на расстоянии в '
-    text += str(round(min(dis), 0))
-    text += 'метров от этого дома'
+    if int(round(min(dis), 0)) > 10:
+        text += ', при этом ближайший дом находится по адресу: '
+        text += result[dis.index(min(dis))][1].replace('Москва, ', '')
+        text += ' на расстоянии в '
+        text += str(int(round(min(dis), 0)))
+        if str(int(round(min(dis), 0)))[-1] == '1' and str(int(round(min(dis), 0)))[-2] != '1':      
+            text += ' метр от этого дома'
+        elif str(int(round(min(dis), 0)))[-1] == '2' and str(int(round(min(dis), 0)))[-2] != '1':
+            text += ' метра от этого дома'
+        elif str(int(round(min(dis), 0)))[-1] == '3' and str(int(round(min(dis), 0)))[-2] != '1':
+            text += ' метра от этого дома'
+        elif str(int(round(min(dis), 0)))[-1] == '4' and str(int(round(min(dis), 0)))[-2] != '1':
+            text += ' метра от этого дома'
+        else:
+            text += ' метров от этого дома'
+    else:
+      text += ', но ближайший зараженный находится в этом доме!'
     return text
 
 
@@ -127,7 +139,7 @@ def handle_dialog(req, res):
             for i, dat in enumerate(req['request']['nlu']['entities']):
                 if dat['type'] == "YANDEX.GEO":
                     parts[user_id] = 1
-                    geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=" + \
+                    geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
                         req['request']['nlu']['entities'][i]['value']['street'] + \
                         ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
                     response = requests.get(geocoder_request)
