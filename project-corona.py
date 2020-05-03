@@ -14,7 +14,6 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 
-
 sessionStorage = {}
 
 parts = {}  # 0 - узнаем адрес, 1 - говорим количество
@@ -22,7 +21,6 @@ parts = {}  # 0 - узнаем адрес, 1 - говорим количеств
 
 '''
 geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Красная площадь,+1&format=json"
-
 response = requests.get(geocoder_request)
 if response:
     json_response = response.json()
@@ -38,7 +36,7 @@ else:
 
 @app.route('/', methods=['POST'])
 def main():
-    #logging.info(f'Request: {request.json!r}')
+    # logging.info(f'Request: {request.json!r}')
     response = {
         'session': request.json['session'],
         'version': request.json['version'],
@@ -47,10 +45,8 @@ def main():
         }
     }
     handle_dialog(request.json, response)
-    #logging.info(f'Response:  {response!r}')
+    # logging.info(f'Response:  {response!r}')
     return json.dumps(response)
-
-
 
 
 '''
@@ -88,15 +84,23 @@ def handle_dialog(req, res):
         pass
     if parts[user_id] == 0:
         try:
-            err = True
             for i, dat in enumerate(req['request']['nlu']['entities']):
                 if dat['type'] == "YANDEX.GEO":
                     parts[user_id] = 1
-                    err = False
-                    res['response']['text'] = req['request']['nlu']['entities'][i]['value']['street'] + ', ' + \
-                        req['request']['nlu']['entities'][i]['value']['house_number']
+                    geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=" + \
+                        req['request']['nlu']['entities'][i]['value']['street'] + \
+                        ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
+                    response = requests.get(geocoder_request)
+                    if response:
+                        json_response = response.json()
+                        toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+                        toponym_coodrinates = toponym["Point"]["pos"]
+                        res['response']['text'] = toponym_coodrinates
+                    else:
+                        res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
+                    return
             if err:
-                res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+                res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
                 res['response']['buttons'] = [{
                     "title": "Красная площадь, 1",
                     "payload": {},
@@ -106,8 +110,8 @@ def handle_dialog(req, res):
                     "payload": {},
                     "hide": True
                 }]
-        except:
-            res['response']['text'] = 'Кажется, такого адреса нет. Назовите адрес еще раз'
+        except Exception:
+            res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
             res['response']['buttons'] = [{
                 "title": "Красная площадь, 1",
                 "payload": {},
@@ -117,9 +121,8 @@ def handle_dialog(req, res):
                 "payload": {},
                 "hide": True
             }]
-        
+
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
-    
