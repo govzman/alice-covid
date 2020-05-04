@@ -81,7 +81,7 @@ def handle_dialog(req, res):
     if req['session']['new']:
         parts[user_id] = 0
         res['response'][
-            'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать'
+            'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать, но помни, что я могу сказать только про Москву и окрестности'
         res['response']['buttons'] = [{
             "title": "Красная площадь, 1",
             "payload": {},
@@ -94,14 +94,14 @@ def handle_dialog(req, res):
         return
 
     try:
-        if req['request']['nlu']['tokens'] == ['закончить', 'диалог']:
+        if list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['закончить', 'диалог'] or list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['прекратить', 'диалог']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
             res['response']['end_session'] = True
             return
     except Exception:
         pass
     try:
-        if req['request']['nlu']['tokens'] == ['что', 'ты', 'умеешь'] or req['request']['nlu']['tokens'] == ['помощь']:
+        if list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['что', 'ты', 'умеешь'] or list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['помощь']:
             res['response']['text'] = 'Я умею определять сколько зараженных коронавирусом людей находятся в радиусе 1 километра от тебя, для этого мне достаточно сказать адрес любого дома. Скажи мне адрес'
             parts[user_id] = 0
             return
@@ -110,8 +110,7 @@ def handle_dialog(req, res):
     if parts[user_id] == 0:
         try:
             for i, dat in enumerate(req['request']['nlu']['entities']):
-                if dat['type'] == "YANDEX.GEO":
-                    
+                if dat['type'] == "YANDEX.GEO":                    
                     geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
                         req['request']['nlu']['entities'][i]['value']['street'] + \
                         ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
@@ -158,11 +157,11 @@ def handle_dialog(req, res):
             }]
 
     else:
-        if 'нет' in req['request']['nlu']['tokens'] or 'не хочу' in req['request']['nlu']['tokens']:
+        if 'нет' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'не хочу' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
             res['response']['end_session'] = True
             return
-        else:
+        elif 'да' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'давай' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             parts[user_id] = 0
             res['response']['text'] = 'Назови адрес'
             res['response']['buttons'] = [{
@@ -174,6 +173,17 @@ def handle_dialog(req, res):
                 "payload": {},
                             "hide": True
             }]
+        else:
+            res['response']['text'] = 'Ты не определился, скажи да или нет'
+            res['response']['buttons'] = [{
+                "title": "Да",
+                "payload": {},
+                "hide": True
+            }, {
+              "title": "Нет",
+              "payload": {},    
+              "hide": True
+            }]           
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
