@@ -103,7 +103,7 @@ def handle_dialog(req, res):
     try:
         if req['request']['nlu']['tokens'] == ['что', 'ты', 'умеешь'] or req['request']['nlu']['tokens'] == ['помощь']:
             res['response']['text'] = 'Я умею определять сколько зараженных коронавирусом людей находятся в радиусе 1 километра от тебя, для этого мне достаточно сказать адрес любого дома. Скажи мне адрес'
-            res['response']['end_session'] = True
+            parts[user_id] = 0
             return
     except Exception:
         pass
@@ -111,7 +111,7 @@ def handle_dialog(req, res):
         try:
             for i, dat in enumerate(req['request']['nlu']['entities']):
                 if dat['type'] == "YANDEX.GEO":
-                    parts[user_id] = 1
+                    
                     geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
                         req['request']['nlu']['entities'][i]['value']['street'] + \
                         ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
@@ -122,6 +122,7 @@ def handle_dialog(req, res):
                         toponym_coordinates = toponym["Point"]["pos"]
                         res['response']['text'] = search(
                             toponym_coordinates.split())
+                        parts[user_id] = 1
                         res['response']['buttons'] = [{
                               "title": "Да",
                               "payload": {},
