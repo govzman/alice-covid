@@ -22,7 +22,7 @@ def search(cords, rad=1):
     for i in result:
         distance = ((
             (i[2] - int(cords[1].replace('.', '').ljust(10, '0'))) / 900) ** 2 + (
-            (i[3] - int(cords[0].replace('.', '').ljust(10, '0'))) / 15625) ** 2) ** 0.5
+            (i[3] - int(cords[0].replace('.', '').ljust(10, '0'))) / 1562.5) ** 2) ** 0.5
         dis.append(distance)
     text = "В радиусе 1 километра от этого дома " + str(len(result))
     if str(len(result))[-1] == '1' and str(len(result))[-2] != '1':
