@@ -96,6 +96,7 @@ def handle_dialog(req, res):
     try:
         if list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['закончить', 'диалог'] or list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['прекратить', 'диалог']:
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
+            parts[user_id] = 0
             res['response']['end_session'] = True
             return
     except Exception:
@@ -110,10 +111,16 @@ def handle_dialog(req, res):
     if parts[user_id] == 0:
         try:
             for i, dat in enumerate(req['request']['nlu']['entities']):
-                if dat['type'] == "YANDEX.GEO":                    
-                    geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
-                        req['request']['nlu']['entities'][i]['value']['street'] + \
-                        ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
+                if dat['type'] == "YANDEX.GEO":      
+                    if 'city' not in list(req['request']['nlu']['entities'][i]['value'].keys()):
+                        geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
+                            req['request']['nlu']['entities'][i]['value']['street'] + \
+                            ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
+                    else:
+                        geocoder_request = "http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode=Москва,+" + \
+                            req['request']['nlu']['entities'][i]['value']['city'] + ',+' + \
+                            req['request']['nlu']['entities'][i]['value']['street'] + \
+                            ",+" + req['request']['nlu']['entities'][i]['value']['house_number'] + "&format=json"
                     response = requests.get(geocoder_request)
                     if response:
                         json_response = response.json()
@@ -159,7 +166,8 @@ def handle_dialog(req, res):
     else:
         if 'нет' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'не хочу' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
-            res['response']['end_session'] = True
+            parts[user_id] = 0
+            res['response']['end_session'] = True      
             return
         elif 'да' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'давай' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             parts[user_id] = 0
