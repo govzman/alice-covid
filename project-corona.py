@@ -88,8 +88,9 @@ def handle_dialog(req, res):
         return
 
     try:
-        if list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['закончить', 'диалог'] or list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['прекратить', 'диалог']:
-            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выход+ить из дома!'
+        if list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['закончить', 'диалог'] or list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) == ['завершить', 'диалог']:
+            res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
+            res['response']['tts'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выход+ить из дома!'
             parts[user_id] = 0
             res['response']['end_session'] = True
             return
@@ -132,6 +133,7 @@ def handle_dialog(req, res):
     else:
         if 'нет' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'не хочу' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
+            res['response']['tts'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выход+ить из дома!'
             parts[user_id] = 0
             res['response']['end_session'] = True      
             return
@@ -139,7 +141,8 @@ def handle_dialog(req, res):
             parts[user_id] = 0
             res['response']['text'] = 'Назови адрес'
         else:
-            res['response']['text'] = 'Ты не определился, скажи да sil <[500]> или нет'          
+            res['response']['text'] = 'Ты не определился, скажи да или нет' 
+            res['response']['tts'] = 'Ты не определился, скажи да sil <[300]> или нет'
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
