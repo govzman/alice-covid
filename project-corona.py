@@ -82,15 +82,6 @@ def handle_dialog(req, res):
         parts[user_id] = 0
         res['response'][
             'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать, но помни, что я могу сказать только про Москву и окрестности'
-        res['response']['buttons'] = [{
-            "title": "Тверская улица 1.",
-            "payload": {},
-            "hide": True
-        }, {
-            "title": "Закончить диалог",
-            "payload": {},
-            "hide": True
-        }]
         return
 
     try:
@@ -128,41 +119,13 @@ def handle_dialog(req, res):
                         toponym_coordinates = toponym["Point"]["pos"]
                         res['response']['text'] = search(
                             toponym_coordinates.split())
-                        parts[user_id] = 1
-                        res['response']['buttons'] = [{
-                              "title": "Да.",
-                              "payload": {},
-                              "hide": True
-                        }, {
-                              "title": "Нет.",
-                              "payload": {},    
-                              "hide": True
-                        }]                        
+                        parts[user_id] = 1                       
                     else:
                         res['response']['text'] = 'Мне очень жаль, но такого адреса нет, скажите еще раз'
                     return
             res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
-            res['response']['buttons'] = [{
-                "title": "Тверская улица 1.",
-                "payload": {},
-                "hide": True
-            }, {
-                "title": "Закончить диалог",
-                "payload": {},
-                "hide": True
-            }]
         except Exception as e:
             res['response']['text'] = "Не совсем тебя поняла. Назови адрес еще раз"
-            res['response']['buttons'] = [{
-                "title": "Тверская улица 1.",
-                "payload": {},
-                "hide": True
-            }, {
-                "title": "Закончить диалог",
-                "payload": {},
-                "hide": True
-            }]
-
     else:
         if 'нет' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'не хочу' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             res['response']['text'] = 'Пока! Возвращайся за новой информацией завтра и старайся поменьше выходить из дома!'
@@ -172,26 +135,8 @@ def handle_dialog(req, res):
         elif 'да' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])) or 'давай' in list(map(lambda x: x.lower(), req['request']['nlu']['tokens'])):
             parts[user_id] = 0
             res['response']['text'] = 'Назови адрес'
-            res['response']['buttons'] = [{
-                "title": "Тверская улица 1.",
-                "payload": {},
-                "hide": True
-            }, {
-                "title": "Закончить диалог",
-                "payload": {},
-                            "hide": True
-            }]
         else:
-            res['response']['text'] = 'Ты не определился, скажи да или нет'
-            res['response']['buttons'] = [{
-                "title": "Да.",
-                "payload": {},
-                "hide": True
-            }, {
-              "title": "Нет.",
-              "payload": {},    
-              "hide": True
-            }]           
+            res['response']['text'] = 'Ты не определился, скажи да или нет'          
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
