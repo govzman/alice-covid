@@ -83,7 +83,7 @@ def handle_dialog(req, res):
         res['response'][
             'text'] = 'Привет! Узнай сколько заболевших коронавирусом есть около тебя! Назови адрес, про который хочешь узнать, но помни, что я могу сказать только про Москву и окрестности'
         res['response']['buttons'] = [{
-            "title": "Тверская улица 1",
+            "title": "Тверская улица 1.",
             "payload": {},
             "hide": True
         }, {
@@ -130,11 +130,11 @@ def handle_dialog(req, res):
                             toponym_coordinates.split())
                         parts[user_id] = 1
                         res['response']['buttons'] = [{
-                              "title": "Да",
+                              "title": "Да.",
                               "payload": {},
                               "hide": True
                         }, {
-                              "title": "Нет",
+                              "title": "Нет.",
                               "payload": {},    
                               "hide": True
                         }]                        
@@ -143,7 +143,7 @@ def handle_dialog(req, res):
                     return
             res['response']['text'] = 'Кажется, это не адрес. Назовите адрес еще раз'
             res['response']['buttons'] = [{
-                "title": "Тверская улица 1",
+                "title": "Тверская улица 1.",
                 "payload": {},
                 "hide": True
             }, {
@@ -154,7 +154,7 @@ def handle_dialog(req, res):
         except Exception as e:
             res['response']['text'] = "Не совсем тебя поняла. Назови адрес еще раз"
             res['response']['buttons'] = [{
-                "title": "Тверская улица 1",
+                "title": "Тверская улица 1.",
                 "payload": {},
                 "hide": True
             }, {
@@ -173,7 +173,7 @@ def handle_dialog(req, res):
             parts[user_id] = 0
             res['response']['text'] = 'Назови адрес'
             res['response']['buttons'] = [{
-                "title": "Тверская улица 1",
+                "title": "Тверская улица 1.",
                 "payload": {},
                 "hide": True
             }, {
@@ -184,11 +184,11 @@ def handle_dialog(req, res):
         else:
             res['response']['text'] = 'Ты не определился, скажи да или нет'
             res['response']['buttons'] = [{
-                "title": "Да",
+                "title": "Да.",
                 "payload": {},
                 "hide": True
             }, {
-              "title": "Нет",
+              "title": "Нет.",
               "payload": {},    
               "hide": True
             }]           
