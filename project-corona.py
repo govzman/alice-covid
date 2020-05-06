@@ -17,7 +17,8 @@ def search(cords, rad=1):
     cords[0] = int(cords[0].replace('.', '').ljust(10, '0'))
     cords[1] = int(cords[1].replace('.', '').ljust(10, '0'))
     result = cur.execute(
-        "SELECT width, height, adress FROM adresses").fetchall()
+        "SELECT width, height, adress FROM adresses WHERE (width >= " + str(cords[0] - 9000000 * rad) + ") AND (width <= " + str(cords[0] + 9000000 * rad) +
+        ") AND (height >= " + str(cords[1] - 1562500 * rad) + ") AND (height <= " + str(cords[1] + 1562500 * rad) + ")").fetchall()
     con.close()
     for i in result:  # считаем расстояния через разницу координат
         distance = ((
