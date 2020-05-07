@@ -8,11 +8,11 @@ from flask import Flask, request
 import logging
 import sqlite3
 
-con = sqlite3.connect('data_covid.db')  # база данных
-cur = con.cursor()
+
 
 def search(cords, rad=1):
-    global con, cur
+    con = sqlite3.connect('data_covid.db')  # база данных
+    cur = con.cursor()
     count = 0  # количество где расстояние меньше километра
     dis = []  # список из дистанций
     
@@ -21,7 +21,7 @@ def search(cords, rad=1):
     result = cur.execute(
         "SELECT width, height, adress FROM adresses WHERE (width >= " + str(cords[0] - 9000000 * rad) + ") AND (width <= " + str(cords[0] + 9000000 * rad) +
         ") AND (height >= " + str(cords[1] - 1562500 * rad) + ") AND (height <= " + str(cords[1] + 1562500 * rad) + ")").fetchall()
-    
+    con.close()
     for i in result:  # считаем расстояния через разницу координат
         distance = ((
             (i[1] - cords[1]) / 900) ** 2 + (
