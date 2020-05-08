@@ -11,8 +11,7 @@ import sqlite3
 
 
 def search(cords, rad=1):
-    con = sqlite3.connect('data_covid.db')  # база данных
-    cur = con.cursor()
+    global cur
     count = 0  # количество где расстояние меньше километра
     dis = []  # список из дистанций
     
@@ -21,7 +20,6 @@ def search(cords, rad=1):
     result = cur.execute(
         "SELECT width, height, adress FROM adresses WHERE (width >= " + str(cords[0] - 9000000 * rad) + ") AND (width <= " + str(cords[0] + 9000000 * rad) +
         ") AND (height >= " + str(cords[1] - 1562500 * rad) + ") AND (height <= " + str(cords[1] + 1562500 * rad) + ")").fetchall()
-    con.close()
     for i in result:  # считаем расстояния через разницу координат
         distance = ((
             (i[1] - cords[1]) / 900) ** 2 + (
@@ -152,5 +150,7 @@ def handle_dialog(req, res): # диалог с пользователем
         res['response']['text'] = "Не совсем тебя поняла. Назови адрес еще раз"
 
 if __name__ == '__main__':
+    con = sqlite3.connect('data_covid.db', check_same_thread=False)  # база данных
+    cur = con.cursor()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
