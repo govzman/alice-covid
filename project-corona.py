@@ -13,12 +13,13 @@ import sqlite3
 def search(cords, rad=1):
     global cur
     count = 0  # количество где расстояние меньше километра
+    count_new = 0
     dis = []  # список из дистанций
     
     cords[0] = int(cords[0].replace('.', '').ljust(10, '0'))
     cords[1] = int(cords[1].replace('.', '').ljust(10, '0'))
     result = cur.execute(
-        "SELECT width, height, adress FROM adresses WHERE (width >= " + str(cords[0] - 9000000 * rad) + ") AND (width <= " + str(cords[0] + 9000000 * rad) +
+        "SELECT width, height, adress, new FROM adresses WHERE (width >= " + str(cords[0] - 9000000 * rad) + ") AND (width <= " + str(cords[0] + 9000000 * rad) +
         ") AND (height >= " + str(cords[1] - 1562500 * rad) + ") AND (height <= " + str(cords[1] + 1562500 * rad) + ")").fetchall()
     for i in result:  # считаем расстояния через разницу координат
         distance = ((
@@ -27,6 +28,8 @@ def search(cords, rad=1):
         # print(distance)
         if distance <= 1000:
             count += 1
+            if i[3] == 1:
+                count_new += 1
         dis.append(distance)
     if count > 0:
         text = "В радиусе 1 километра от этого дома " + \
@@ -36,6 +39,11 @@ def search(cords, rad=1):
             text += ' зараженный'
         else:
             text += ' зараженных'
+        if count_new == 0:
+            text += ', новых зараженных нет'
+        else:
+            text += ', из них зараженных '
+            text += str(count_new)
         # если расстояние до дома меньше 10 метров, то считает что заболевший в данном доме
         if int(round(min(dis), 0)) > 10:
             text += ', при этом ближайший дом находится по адресу: '
